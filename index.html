@@ -7,94 +7,122 @@
   <title>Floralis — Flower Delivery</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --ink: #1a1a2e;
-      --muted: #5c5672;
-      --line: rgba(255, 255, 255, .45);
-      --cream: #fefbf7;
-      --peach: #ffb088;
+      --ink: #221b33;
+      --muted: #6b6480;
+      --glass-bg: rgba(255, 255, 255, .58);
+      --glass-border: rgba(255, 255, 255, .72);
+      --glass-blur: blur(22px);
       --coral: #ff6f86;
       --rose: #ff94b8;
-      --leaf: #78b66b;
+      --leaf: #7cbf6e;
       --yellow: #ffd86f;
       --lavender: #cdb7ff;
-      --glass-bg: rgba(255, 255, 255, .55);
-      --glass-border: rgba(255, 255, 255, .7);
-      --glass-blur: blur(24px);
-      --shadow-soft: 0 8px 32px rgba(31, 11, 47, .06);
-      --shadow-lift: 0 16px 48px rgba(31, 11, 47, .1);
+      --shadow-soft: 0 8px 32px rgba(31, 11, 47, .07);
+      --shadow-lift: 0 20px 60px rgba(31, 11, 47, .12);
       --radius: 28px;
+      --ease: cubic-bezier(.22, 1, .36, 1);
       font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
       color: var(--ink);
-      background: var(--cream);
+      background: #fdf9f4;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
+      min-height: 100vh; overflow-x: hidden; position: relative;
     }
-
     a { color: inherit; text-decoration: none; }
     button, input { font: inherit; }
 
-    .bg-orbs {
-      position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+    /* ---------- helpers ---------- */
+    .h-serif {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: 600; letter-spacing: -0.03em;
     }
-    .bg-orbs span {
-      position: absolute; border-radius: 50%; filter: blur(80px); opacity: .45;
-      animation: float 18s ease-in-out infinite alternate;
-    }
-    .bg-orbs .orb-1 { width: 600px; height: 600px; top: -15%; left: -8%; background: var(--yellow); animation-delay: 0s; }
-    .bg-orbs .orb-2 { width: 500px; height: 500px; top: 10%; right: -12%; background: var(--rose); animation-delay: -4s; }
-    .bg-orbs .orb-3 { width: 450px; height: 450px; bottom: 15%; left: 20%; background: var(--lavender); animation-delay: -8s; }
-    .bg-orbs .orb-4 { width: 350px; height: 350px; bottom: -10%; right: 25%; background: var(--leaf); opacity: .25; animation-delay: -12s; }
-    .bg-orbs .orb-5 { width: 300px; height: 300px; top: 55%; left: -5%; background: var(--peach); opacity: .3; animation-delay: -6s; }
-    @keyframes float {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(30px, -40px) scale(1.08); }
+    .script {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic; font-weight: 500;
+      color: var(--coral);
     }
 
+    /* ---------- scroll progress ---------- */
+    .scroll-progress {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+      z-index: 100;
+      background: linear-gradient(90deg, var(--coral), var(--rose), var(--yellow));
+      box-shadow: 0 0 12px rgba(255,111,134,.5);
+    }
+
+    /* ---------- cursor glow ---------- */
+    .cursor-glow {
+      position: fixed; top: -250px; left: -250px;
+      width: 500px; height: 500px; border-radius: 50%;
+      pointer-events: none; z-index: 0;
+      background: radial-gradient(circle, rgba(255,111,134,.14), rgba(255,216,111,.08) 40%, transparent 70%);
+      opacity: 0; transition: opacity .4s ease;
+    }
+    body.has-cursor .cursor-glow { opacity: 1; }
+    @media (pointer: coarse) { .cursor-glow { display: none; } }
+
+    /* ---------- background orbs ---------- */
+    .bg-orbs { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .bg-orbs span {
+      position: absolute; border-radius: 50%; filter: blur(90px); opacity: .4;
+      animation: float 20s ease-in-out infinite alternate;
+    }
+    .bg-orbs .orb-1 { width: 620px; height: 620px; top: -16%; left: -10%; background: var(--yellow); }
+    .bg-orbs .orb-2 { width: 520px; height: 520px; top: 8%; right: -14%; background: var(--rose); animation-delay: -5s; }
+    .bg-orbs .orb-3 { width: 460px; height: 460px; bottom: 12%; left: 18%; background: var(--lavender); animation-delay: -9s; }
+    .bg-orbs .orb-4 { width: 360px; height: 360px; bottom: -12%; right: 22%; background: var(--leaf); opacity: .22; animation-delay: -13s; }
+    .bg-orbs .orb-5 { width: 320px; height: 320px; top: 52%; left: -6%; background: var(--coral); opacity: .25; animation-delay: -7s; }
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(34px, -48px) scale(1.1); }
+    }
+
+    /* ---------- header ---------- */
     .site-header {
       position: sticky; top: 12px; z-index: 50;
-      display: flex; align-items: center; justify-content: space-between; gap: 24px;
+      display: flex; align-items: center; justify-content: space-between; gap: 22px;
       width: min(1180px, calc(100% - 40px));
       margin: 16px auto 0;
       padding: 12px 14px 12px 18px;
       border: 1px solid var(--glass-border);
       border-radius: 999px;
-      background: var(--glass-bg);
+      background: rgba(255,255,255,.62);
       backdrop-filter: var(--glass-blur);
       -webkit-backdrop-filter: var(--glass-blur);
-      box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,.6);
+      box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,.7);
+      transition: padding .3s ease, box-shadow .3s ease, background .3s ease;
     }
-
+    .site-header.scrolled {
+      padding: 9px 14px 9px 18px;
+      background: rgba(255,255,255,.78);
+      box-shadow: var(--shadow-lift), inset 0 1px 0 rgba(255,255,255,.8);
+    }
     .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 850; letter-spacing: -0.04em; font-size: 1.1rem; }
     .brand-mark {
       width: 40px; height: 40px; border-radius: 50%;
       background: conic-gradient(from 15deg, var(--coral), var(--yellow), var(--leaf), var(--rose), var(--coral));
-      display: grid; place-items: center; color: white;
-      box-shadow: inset 0 0 0 6px rgba(255,255,255,.5), 0 4px 16px rgba(255,111,134,.2);
+      display: grid; place-items: center; color: white; font-size: 1.05rem;
+      box-shadow: inset 0 0 0 6px rgba(255,255,255,.5), 0 4px 16px rgba(255,111,134,.22);
     }
-
-    .nav { display: flex; align-items: center; gap: 6px; font-size: .92rem; color: var(--muted); }
+    .nav { display: flex; align-items: center; gap: 4px; font-size: .92rem; color: var(--muted); }
     .nav a {
       padding: 8px 14px; border-radius: 999px; font-weight: 600;
-      transition: all .25s ease;
+      transition: all .25s ease; white-space: nowrap;
     }
-    .nav a:hover { background: rgba(255,255,255,.7); color: var(--ink); }
+    .nav a:hover { background: rgba(255,255,255,.85); color: var(--ink); }
+    .nav a.active { background: rgba(255,111,134,.12); color: var(--coral); }
 
     .header-actions { display: flex; align-items: center; gap: 10px; }
     .lang-switch {
-      display: grid; grid-template-columns: 1fr 1fr;
-      min-width: 100px; padding: 4px;
-      border: 1px solid var(--glass-border);
-      border-radius: 999px;
-      background: rgba(255,255,255,.5);
+      display: grid; grid-template-columns: 1fr 1fr; min-width: 100px; padding: 4px;
+      border: 1px solid var(--glass-border); border-radius: 999px;
+      background: rgba(255,255,255,.55);
     }
     .lang-switch button {
       border: 0; background: transparent; border-radius: 999px; padding: 9px 12px;
@@ -103,32 +131,49 @@
     }
     html[data-lang="en"] .lang-switch [data-set-lang="en"],
     html[data-lang="ru"] .lang-switch [data-set-lang="ru"] {
-      background: var(--ink); color: #fff;
-      box-shadow: 0 4px 14px rgba(26,26,46,.18);
+      background: var(--ink); color: #fff; box-shadow: 0 4px 14px rgba(26,26,46,.2);
     }
+    .cart-btn {
+      position: relative; width: 44px; height: 44px; border-radius: 50%;
+      border: 1px solid var(--glass-border); background: rgba(255,255,255,.55);
+      display: grid; place-items: center; cursor: pointer; color: var(--ink);
+      transition: transform .2s ease, background .2s ease;
+    }
+    .cart-btn:hover { transform: translateY(-2px); background: rgba(255,255,255,.85); }
+    .cart-btn svg { width: 20px; height: 20px; }
+    .cart-badge {
+      position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px;
+      padding: 0 5px; border-radius: 999px; background: var(--coral); color: white;
+      font-size: .72rem; font-weight: 800; display: grid; place-items: center;
+      transform: scale(0); transition: transform .3s var(--ease);
+    }
+    .cart-badge.show { transform: scale(1); }
+    .cart-badge.pop { animation: badgePop .4s var(--ease); }
+    @keyframes badgePop { 50% { transform: scale(1.35); } }
 
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 10px;
       min-height: 48px; padding: 0 22px; border-radius: 999px; border: none;
       font-weight: 800; font-size: .95rem; letter-spacing: -0.02em; cursor: pointer;
-      transition: transform .2s ease, box-shadow .25s ease, background .2s ease;
+      transition: transform .2s var(--ease), box-shadow .25s ease, background .2s ease;
+      will-change: transform;
     }
-    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: scale(.97); }
     .btn-primary {
-      background: var(--ink); color: #fff;
-      box-shadow: 0 8px 24px rgba(26,26,46,.2);
+      background: linear-gradient(135deg, var(--ink), #3a2a63);
+      color: #fff; box-shadow: 0 8px 24px rgba(26,26,46,.22);
     }
-    .btn-primary:hover { box-shadow: 0 12px 36px rgba(255,111,134,.25); background: #2d1f4e; }
+    .btn-primary:hover { box-shadow: 0 14px 40px rgba(255,111,134,.35); }
     .btn-soft {
       background: var(--glass-bg); border: 1px solid var(--glass-border);
       color: var(--ink); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     }
-    .btn-soft:hover { background: rgba(255,255,255,.8); }
+    .btn-soft:hover { background: rgba(255,255,255,.85); }
 
     .content-wrap { position: relative; z-index: 1; }
-
     main { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
 
+    /* ---------- hero ---------- */
     .hero {
       position: relative; display: grid;
       grid-template-columns: minmax(0, 1.04fr) minmax(340px, .96fr);
@@ -142,33 +187,35 @@
       color: var(--muted); font-weight: 700; font-size: .88rem;
       box-shadow: inset 0 1px 0 rgba(255,255,255,.5);
     }
-    .eyebrow-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--leaf); box-shadow: 0 0 0 7px rgba(120,182,107,.16); }
-    .hero h1 { margin: 24px 0 20px; font-size: clamp(4rem, 11vw, 8.8rem); line-height: .78; letter-spacing: -0.09em; max-width: 830px; }
+    .eyebrow-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--leaf); box-shadow: 0 0 0 7px rgba(124,191,110,.16); }
+    .hero h1 { margin: 26px 0 20px; font-size: clamp(4rem, 11vw, 8.6rem); line-height: .82; letter-spacing: -0.06em; max-width: 830px; }
     .hero h1 span { display: block; }
-    .hero .script { font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-weight: 500; color: var(--coral); letter-spacing: -0.06em; }
+    .hero .script { color: var(--coral); }
     .lead { max-width: 600px; color: var(--muted); font-size: clamp(1.06rem, 2vw, 1.24rem); line-height: 1.6; margin: 0; }
     .hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-top: 32px; }
-    .trust-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .trust-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
     .trust-row span {
       display: inline-flex; align-items: center; gap: 8px;
-      padding: 10px 16px;
+      padding: 10px 16px; border-radius: 999px;
       background: var(--glass-bg); border: 1px solid var(--glass-border);
-      border-radius: 999px; font-weight: 700; font-size: .9rem;
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       box-shadow: inset 0 1px 0 rgba(255,255,255,.4);
-      color: var(--muted);
+      color: var(--muted); font-weight: 700; font-size: .9rem;
+      transition: transform .25s var(--ease), box-shadow .25s ease;
     }
+    .trust-row span:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
 
-    .bouquet-stage { position: relative; min-height: 610px; display: grid; place-items: center; }
+    .bouquet-stage { position: relative; min-height: 620px; display: grid; place-items: center; perspective: 1200px; }
     .blob-card {
       position: relative; width: min(100%, 510px); aspect-ratio: 1 / 1.1;
       border-radius: 44% 56% 52% 48% / 55% 42% 58% 45%;
-      background: linear-gradient(145deg, rgba(255,255,255,.72), rgba(255,231,214,.6));
-      border: 1px solid rgba(255,255,255,.8);
+      background: linear-gradient(145deg, rgba(255,255,255,.7), rgba(255,231,214,.55));
+      border: 1px solid rgba(255,255,255,.85);
       backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-      box-shadow: 0 24px 64px rgba(255,111,134,.12), inset 0 1px 0 rgba(255,255,255,.6);
+      box-shadow: 0 24px 64px rgba(255,111,134,.14), inset 0 1px 0 rgba(255,255,255,.7);
       overflow: clip; contain: paint;
-      display: grid; place-items: center;
+      transition: transform .3s var(--ease);
+      transform-style: preserve-3d;
     }
     .blob-card img {
       width: 100%; height: 100%; object-fit: cover;
@@ -176,193 +223,315 @@
     }
     .blob-card::after {
       content: ""; position: absolute; inset: 0; border-radius: inherit;
-      background: radial-gradient(circle at 50% 30%, rgba(255,255,255,.25), transparent 60%);
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,.4), transparent 45%),
+        radial-gradient(circle at 70% 80%, rgba(255,216,111,.18), transparent 50%);
       pointer-events: none;
     }
     .floating-card {
       position: absolute;
-      background: var(--glass-bg); border: 1px solid var(--glass-border);
+      background: rgba(255,255,255,.8); border: 1px solid rgba(255,255,255,.9);
       border-radius: 22px; padding: 18px 20px;
       box-shadow: var(--shadow-lift);
-      backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      animation: floaty 6s ease-in-out infinite;
     }
-    .delivery-card { right: 0; bottom: 74px; width: 210px; }
-    .rating-card { left: 4px; top: 84px; width: 188px; }
+    .delivery-card { right: 0; bottom: 74px; width: 210px; animation-delay: -2s; }
+    .rating-card { left: 4px; top: 84px; width: 188px; animation-delay: -4s; }
+    @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
     .floating-card strong { display: block; font-size: 1.5rem; letter-spacing: -0.06em; }
     .floating-card small { display: block; color: var(--muted); margin-top: 4px; line-height: 1.35; font-size: .88rem; }
 
+    /* ---------- marquee ---------- */
     .marquee {
-      margin: 0 calc(50% - 50vw) 64px; padding: 18px 0; overflow: hidden;
+      margin: 0 calc(50% - 50vw) 40px; padding: 18px 0; overflow: hidden;
       border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border);
       background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
     }
-    .marquee-track { display: flex; gap: 24px; width: max-content; animation: slide 22s linear infinite; }
+    .marquee:hover .marquee-track { animation-play-state: paused; }
+    .marquee-track { display: flex; gap: 24px; width: max-content; animation: slide 26s linear infinite; }
     .marquee span { font-weight: 900; letter-spacing: -0.02em; color: var(--muted); white-space: nowrap; font-size: .95rem; }
     .marquee b { color: var(--coral); margin: 0 24px; }
     @keyframes slide { to { transform: translateX(-50%); } }
 
-    section { padding: 64px 0; }
-    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 32px; }
-    .kicker { color: var(--coral); font-weight: 900; letter-spacing: .12em; text-transform: uppercase; font-size: .78rem; }
-    h2 { margin: 8px 0 0; font-size: clamp(2.25rem, 5vw, 4.6rem); line-height: .88; letter-spacing: -0.075em; max-width: 820px; }
-    .section-copy { max-width: 420px; color: var(--muted); line-height: 1.6; margin: 0; font-size: 1.05rem; }
-
-    .collection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .product-card {
-      position: relative; min-height: 430px; padding: 24px;
-      border-radius: var(--radius); overflow: hidden;
+    /* ---------- stats strip ---------- */
+    .stats {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+      margin: 0 0 64px;
+    }
+    .stat {
+      padding: 26px 22px; border-radius: 24px; text-align: center;
       background: var(--glass-bg); border: 1px solid var(--glass-border);
-      backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-      box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,.5);
-      display: flex; flex-direction: column; justify-content: space-between;
-      transition: transform .3s ease, box-shadow .3s ease;
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.5);
+      transition: transform .3s var(--ease), box-shadow .3s ease;
     }
-    .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift), 0 0 40px rgba(255,111,134,.1); }
-    .product-card::after {
-      content: ""; position: absolute; inset: -2px; border-radius: inherit;
-      background: linear-gradient(135deg, rgba(255,111,134,.2), rgba(205,183,255,.2), rgba(120,182,107,.2));
-      z-index: -1; opacity: 0; transition: opacity .3s ease;
+    .stat:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+    .stat b {
+      display: block; font-size: 2.1rem; letter-spacing: -0.05em;
+      font-family: 'Fraunces', Georgia, serif; font-weight: 600;
+      background: linear-gradient(135deg, var(--coral), #b06bff);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    .product-card:hover::after { opacity: 1; }
-    .product-img {
-      position: relative; flex: 1; min-height: 240px; margin: -8px -4px 14px;
-      border-radius: 20px; overflow: hidden;
-    }
-    .product-img img {
-      width: 100%; height: 100%; object-fit: cover; display: block;
-      transition: transform .4s ease;
-    }
-    .product-card:hover .product-img img { transform: scale(1.05); }
-    .product-img::after {
-      content: ""; position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(255,255,255,.3), transparent 40%);
-      pointer-events: none;
-    }
-    .product-card h3 { margin: 0 0 8px; font-size: 1.55rem; letter-spacing: -0.05em; }
-    .product-card p { margin: 0; color: var(--muted); line-height: 1.5; font-size: .95rem; }
-    .price-row { margin-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .price { font-size: 1.3rem; font-weight: 900; letter-spacing: -0.04em; }
-    .add {
-      width: 48px; height: 48px; border-radius: 50%; border: 0;
-      background: var(--ink); color: #fff; font-size: 1.3rem; cursor: pointer;
-      transition: background .2s, transform .2s;
-    }
-    .add:hover { background: var(--coral); transform: scale(1.08); }
+    .stat small { display: block; margin-top: 6px; color: var(--muted); font-weight: 600; font-size: .88rem; }
 
+    /* ---------- sections ---------- */
+    section { padding: 58px 0; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 34px; }
+    .kicker { color: var(--coral); font-weight: 900; letter-spacing: .14em; text-transform: uppercase; font-size: .76rem; }
+    h2 { margin: 10px 0 0; font-size: clamp(2.4rem, 5vw, 4.6rem); line-height: .92; letter-spacing: -0.03em; max-width: 820px; }
+    .section-copy { max-width: 420px; color: var(--muted); line-height: 1.65; margin: 0; font-size: 1.05rem; }
+
+    /* ---------- collections: big bouquets ---------- */
+    .collection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; perspective: 1600px; }
+    .collection-card {
+      position: relative; aspect-ratio: 3 / 3.6;
+      border-radius: 30px; overflow: hidden;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-soft);
+      transform-style: preserve-3d;
+      transition: box-shadow .35s ease;
+      background: var(--glass-bg);
+    }
+    .collection-card:hover { box-shadow: var(--shadow-lift), 0 0 50px rgba(255,111,134,.14); }
+    .collection-media { position: absolute; inset: 0; overflow: hidden; }
+    .collection-media img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform .7s var(--ease);
+    }
+    .collection-card:hover .collection-media img { transform: scale(1.08); }
+    .collection-media::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(20,10,30,.5), transparent 40%);
+      opacity: .7; transition: opacity .4s ease;
+    }
+    .collection-card:hover .collection-media::after { opacity: .9; }
+
+    .collection-chip {
+      position: absolute; top: 16px; left: 16px; z-index: 3;
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 9px 14px; border-radius: 999px;
+      background: linear-gradient(135deg, var(--coral), #ff9a6f);
+      color: white; font-size: .8rem; font-weight: 800; letter-spacing: .02em;
+      box-shadow: 0 8px 22px rgba(255,111,134,.35);
+    }
+    .collection-chip span { display: inline-block; animation: pulseDot 1.6s ease infinite; }
+    @keyframes pulseDot { 50% { transform: scale(1.35); } }
+    .collection-rating {
+      position: absolute; top: 16px; right: 16px; z-index: 3;
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 8px 13px; border-radius: 999px;
+      background: rgba(255,255,255,.75); border: 1px solid rgba(255,255,255,.9);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      font-size: .82rem; font-weight: 800; color: var(--ink);
+    }
+    .collection-rating em { color: #e59a18; font-style: normal; }
+
+    .collection-body {
+      position: absolute; left: 14px; right: 14px; bottom: 14px; z-index: 3;
+      padding: 20px 20px 18px; border-radius: 22px;
+      background: rgba(255,255,255,.68);
+      border: 1px solid rgba(255,255,255,.85);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 12px 36px rgba(20,10,30,.16);
+      transform: translateZ(40px);
+      transition: transform .4s var(--ease);
+    }
+    .collection-card:hover .collection-body { transform: translateZ(56px) translateY(-6px); }
+    .collection-tag {
+      display: inline-block; font-size: .72rem; font-weight: 800;
+      letter-spacing: .1em; text-transform: uppercase; color: var(--coral);
+      margin-bottom: 6px;
+    }
+    .collection-body h3 { font-size: 1.5rem; letter-spacing: -0.04em; margin-bottom: 5px; }
+    .collection-body p { color: var(--muted); font-size: .92rem; line-height: 1.5; margin-bottom: 14px; }
+    .collection-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .collection-price { font-size: 1.35rem; font-weight: 900; letter-spacing: -0.04em; }
+    .collection-price small { display: block; font-size: .72rem; font-weight: 600; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+    .add {
+      width: 50px; height: 50px; border-radius: 50%; border: 0;
+      background: linear-gradient(135deg, var(--ink), #3a2a63); color: #fff;
+      font-size: 1.4rem; cursor: pointer; line-height: 1;
+      box-shadow: 0 8px 20px rgba(26,26,46,.25);
+      transition: transform .2s var(--ease), box-shadow .2s ease, background .2s ease;
+    }
+    .add:hover { transform: rotate(90deg) scale(1.08); background: linear-gradient(135deg, var(--coral), #ff9a6f); }
+    .add.added { background: var(--leaf); }
+
+    /* ---------- steps ---------- */
     .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
     .step {
-      padding: 28px; border-radius: 24px;
+      padding: 28px; border-radius: 26px; position: relative; overflow: hidden;
       background: var(--glass-bg); border: 1px solid var(--glass-border);
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       min-height: 200px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.4);
-      transition: transform .25s ease, box-shadow .25s ease;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.5);
+      transition: transform .3s var(--ease), box-shadow .3s ease;
     }
-    .step:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+    .step:hover { transform: translateY(-5px); box-shadow: var(--shadow-lift); }
+    .step::before {
+      content: ""; position: absolute; top: -40px; right: -40px;
+      width: 130px; height: 130px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,111,134,.16), transparent 70%);
+      opacity: 0; transition: opacity .3s ease;
+    }
+    .step:hover::before { opacity: 1; }
     .step-num {
-      width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
-      background: rgba(255,111,134,.1); color: var(--coral); font-weight: 900;
+      width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center;
+      background: linear-gradient(135deg, rgba(255,111,134,.14), rgba(255,216,111,.14));
+      color: var(--coral); font-weight: 900; font-size: 1rem;
       margin-bottom: 20px;
     }
-    .step h3 { margin: 0 0 8px; letter-spacing: -0.04em; font-size: 1.25rem; }
-    .step p { margin: 0; color: var(--muted); line-height: 1.5; font-size: .93rem; }
+    .step h3 { margin: 0 0 8px; letter-spacing: -0.04em; font-size: 1.28rem; }
+    .step p { margin: 0; color: var(--muted); line-height: 1.55; font-size: .93rem; }
 
-    .split { display: grid; grid-template-columns: .9fr 1.1fr; gap: 20px; align-items: stretch; }
+    /* ---------- split / benefits ---------- */
+    .split { display: grid; grid-template-columns: .9fr 1.1fr; gap: 22px; align-items: stretch; }
     .panel {
       border-radius: 32px; border: 1px solid var(--glass-border);
       background: var(--glass-bg);
       backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-      box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,.5);
-      padding: 36px; overflow: hidden;
+      box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,.55);
+      padding: 38px; overflow: hidden; position: relative;
     }
     .panel.highlight {
-      background: linear-gradient(135deg, rgba(255,126,152,.85), rgba(255,176,113,.85) 48%, rgba(255,216,111,.85));
-      color: white; position: relative; contain: paint;
-      backdrop-filter: blur(0); -webkit-backdrop-filter: blur(0);
+      background: linear-gradient(135deg, #ff6f86, #ff9a6f 48%, #ffd86f);
+      color: white; contain: paint;
+      backdrop-filter: none; -webkit-backdrop-filter: none;
     }
     .panel.highlight::after {
       content: ""; position: absolute; right: -18px; bottom: -38px;
       width: 170px; height: 170px; border-radius: 50%;
-      background: rgba(255,255,255,.2);
+      background: rgba(255,255,255,.22);
     }
     .panel.highlight h2 { max-width: 460px; }
+    .panel.highlight .kicker { color: rgba(255,255,255,.85); }
     .benefits { display: grid; gap: 14px; }
     .benefit {
-      display: flex; gap: 14px; padding: 18px; border-radius: 18px;
+      display: flex; gap: 14px; padding: 18px; border-radius: 20px;
       background: rgba(255,255,255,.5); border: 1px solid var(--glass-border);
-      transition: background .2s;
+      transition: all .25s ease;
     }
-    .benefit:hover { background: rgba(255,255,255,.75); }
+    .benefit:hover { background: rgba(255,255,255,.85); transform: translateX(6px); }
     .benefit-icon {
-      width: 44px; height: 44px; flex: 0 0 auto; border-radius: 14px;
-      display: grid; place-items: center;
-      background: rgba(120,182,107,.12);
+      width: 46px; height: 46px; flex: 0 0 auto; border-radius: 14px;
+      display: grid; place-items: center; font-size: 1.25rem;
+      background: linear-gradient(135deg, rgba(124,191,110,.16), rgba(255,216,111,.16));
     }
     .benefit strong { display: block; margin-bottom: 4px; letter-spacing: -.03em; font-size: 1.05rem; }
     .benefit span { color: var(--muted); line-height: 1.45; font-size: .92rem; }
 
+    /* ---------- reviews ---------- */
     .reviews { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
     .review {
-      padding: 26px; min-height: 200px; border-radius: 24px;
+      padding: 28px; min-height: 200px; border-radius: 26px;
       background: var(--glass-bg); border: 1px solid var(--glass-border);
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.4);
-      transition: transform .25s ease, box-shadow .25s ease;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.5);
+      transition: transform .3s var(--ease), box-shadow .3s ease;
     }
-    .review:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+    .review:hover { transform: translateY(-5px) rotate(-.5deg); box-shadow: var(--shadow-lift); }
     .stars { color: #e59a18; letter-spacing: 2px; margin-bottom: 16px; font-size: 1.1rem; }
     .review p { margin: 0 0 18px; line-height: 1.55; color: #4a4458; font-size: .96rem; }
-    .review strong { letter-spacing: -.03em; font-size: 1.05rem; }
+    .review-author { display: flex; align-items: center; gap: 10px; }
+    .review-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: grid; place-items: center; color: #fff; font-weight: 800; font-size: .8rem;
+      background: linear-gradient(135deg, var(--coral), var(--lavender));
+    }
+    .review strong { letter-spacing: -.03em; font-size: 1rem; }
 
+    /* ---------- FAQ ---------- */
+    .faq-list { display: grid; gap: 12px; max-width: 860px; }
+    .faq-item {
+      border-radius: 20px; overflow: hidden;
+      background: var(--glass-bg); border: 1px solid var(--glass-border);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.5);
+      transition: box-shadow .3s ease;
+    }
+    .faq-item.open { box-shadow: var(--shadow-lift); }
+    .faq-q {
+      width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 20px 22px; border: 0; background: transparent; cursor: pointer;
+      text-align: left; font-weight: 800; font-size: 1.05rem; color: var(--ink); letter-spacing: -0.02em;
+    }
+    .faq-icon {
+      width: 32px; height: 32px; flex: 0 0 auto; border-radius: 50%;
+      display: grid; place-items: center; font-size: 1.1rem; color: var(--coral);
+      background: rgba(255,111,134,.12);
+      transition: transform .35s var(--ease);
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height .4s var(--ease); }
+    .faq-a p { padding: 0 22px 22px; color: var(--muted); line-height: 1.6; font-size: .96rem; }
+
+    /* ---------- CTA ---------- */
     .cta {
       margin: 56px 0 80px; border-radius: 38px;
-      padding: clamp(32px, 6vw, 64px);
-      background: var(--glass-bg); border: 1px solid var(--glass-border);
-      backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-      color: var(--ink); position: relative; overflow: clip; contain: paint;
+      padding: clamp(34px, 6vw, 66px);
+      background: linear-gradient(135deg, rgba(255,69,116,.9), rgba(255,126,114,.88) 48%, rgba(255,196,90,.88));
+      color: white; position: relative; overflow: clip; contain: paint;
       display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
-      box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,.5);
+      box-shadow: 0 24px 70px rgba(255,111,134,.3);
     }
-    .cta::before {
-      content: ""; position: absolute; left: -34px; bottom: -56px;
-      width: 230px; height: 230px; border-radius: 50%;
-      background: rgba(255,111,134,.2); filter: blur(6px);
+    .cta::before, .cta::after {
+      content: ""; position: absolute; border-radius: 50%;
+      background: rgba(255,255,255,.16); filter: blur(2px);
     }
-    .cta::after {
-      content: ""; position: absolute; right: -32px; top: -54px;
-      width: 230px; height: 230px; border-radius: 50%;
-      background: rgba(255,216,111,.18); filter: blur(6px);
-    }
+    .cta::before { left: -36px; bottom: -60px; width: 240px; height: 240px; }
+    .cta::after { right: -34px; top: -56px; width: 240px; height: 240px; }
     .cta > * { position: relative; z-index: 1; }
-    .cta h2 { margin: 0 0 14px; }
-    .cta p { margin: 0; color: var(--muted); max-width: 620px; line-height: 1.6; font-size: 1.05rem; }
-    .cta .btn { background: var(--ink); color: #fff; box-shadow: 0 8px 24px rgba(26,26,46,.2); }
+    .cta h2 { margin: 0 0 14px; color: white; }
+    .cta p { margin: 0; color: rgba(255,255,255,.88); max-width: 620px; line-height: 1.65; font-size: 1.06rem; }
+    .cta .btn {
+      background: white; color: var(--ink);
+      box-shadow: 0 12px 32px rgba(120,20,40,.3);
+    }
+    .cta .btn:hover { box-shadow: 0 16px 44px rgba(120,20,40,.4); }
 
     footer {
       margin: 0 calc(50% - 50vw);
-      padding: 28px max(20px, calc((100vw - 1180px) / 2));
+      padding: 30px max(20px, calc((100vw - 1180px) / 2));
       border-top: 1px solid var(--glass-border);
       color: var(--muted); display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap;
       font-size: .92rem;
     }
 
-    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .6s ease, transform .6s ease; }
+    /* ---------- back to top ---------- */
+    .to-top {
+      position: fixed; right: 24px; bottom: 24px; z-index: 40;
+      width: 50px; height: 50px; border-radius: 50%;
+      display: grid; place-items: center; cursor: pointer;
+      background: rgba(255,255,255,.8); border: 1px solid var(--glass-border);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      box-shadow: var(--shadow-lift); color: var(--ink); font-size: 1.1rem;
+      opacity: 0; transform: translateY(16px); pointer-events: none;
+      transition: all .35s var(--ease);
+    }
+    .to-top.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .to-top:hover { transform: translateY(-4px); color: var(--coral); }
+
+    /* ---------- reveal ---------- */
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity .7s var(--ease), transform .7s var(--ease); transition-delay: var(--d, 0s); }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
     [data-i18n] { transition: opacity .16s ease; }
-    .is-switching [data-i18n] { opacity: .22; }
+    .is-switching [data-i18n] { opacity: .2; }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
       .reveal { opacity: 1; transform: none; }
+      .cursor-glow, .bg-orbs { display: none; }
     }
     @media (max-width: 980px) {
       .site-header { width: min(100% - 24px, 720px); align-items: stretch; border-radius: 24px; flex-wrap: wrap; top: 8px; }
-      .nav { order: 3; width: 100%; justify-content: space-between; gap: 6px; overflow-x: auto; padding: 3px 2px 0; }
+      .nav { order: 3; width: 100%; justify-content: space-between; gap: 4px; overflow-x: auto; padding: 3px 2px 0; }
       .hero, .split { grid-template-columns: 1fr; }
       .hero { min-height: auto; padding-top: 52px; }
-      .bouquet-stage { min-height: 560px; }
-      .collection-grid, .reviews { grid-template-columns: 1fr; }
+      .bouquet-stage { min-height: 540px; }
+      .collection-grid, .reviews, .stats { grid-template-columns: 1fr; }
+      .collection-card { aspect-ratio: 4 / 3.4; }
       .steps { grid-template-columns: repeat(2, 1fr); }
       .section-head { align-items: start; flex-direction: column; }
       .cta { grid-template-columns: 1fr; }
@@ -372,44 +541,47 @@
       .site-header { margin-top: 10px; }
       .brand { font-size: 1rem; }
       .header-actions .btn { display: none; }
-      .hero h1 { font-size: clamp(3.7rem, 20vw, 5.8rem); }
+      .hero h1 { font-size: clamp(3.7rem, 20vw, 5.4rem); }
       .hero-actions { align-items: stretch; flex-direction: column; }
       .hero-actions .btn { width: 100%; }
-      .bouquet-stage { min-height: 420px; }
+      .bouquet-stage { min-height: 430px; }
       .blob-card { width: 100%; aspect-ratio: 1; }
-      .floating-card { transform: scale(.86); }
+      .floating-card { transform: scale(.86); animation: none; }
       .delivery-card { right: -14px; bottom: 38px; }
       .rating-card { left: -18px; top: 42px; }
       .steps { grid-template-columns: 1fr; }
+      .collection-card { aspect-ratio: 4 / 4.6; }
       .panel { padding: 24px; border-radius: 24px; }
       footer { flex-direction: column; }
     }
   </style>
 </head>
 <body>
+  <div class="scroll-progress" id="scrollProgress"></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
   <div class="bg-orbs" aria-hidden="true">
-    <span class="orb-1"></span>
-    <span class="orb-2"></span>
-    <span class="orb-3"></span>
-    <span class="orb-4"></span>
-    <span class="orb-5"></span>
+    <span class="orb-1"></span><span class="orb-2"></span><span class="orb-3"></span><span class="orb-4"></span><span class="orb-5"></span>
   </div>
 
   <div class="content-wrap">
-    <header class="site-header" aria-label="Main navigation">
+    <header class="site-header" id="siteHeader" aria-label="Main navigation">
       <a class="brand" href="#top" aria-label="Floralis home"><span class="brand-mark">✿</span><span>Floralis</span></a>
       <nav class="nav" aria-label="Sections">
         <a href="#collections" data-i18n="nav.collections">Collections</a>
         <a href="#how" data-i18n="nav.how">How it works</a>
         <a href="#care" data-i18n="nav.care">Freshness</a>
-        <a href="#reviews" data-i18n="nav.reviews">Reviews</a>
+        <a href="#faq" data-i18n="nav.faq">FAQ</a>
       </nav>
       <div class="header-actions">
+        <button class="cart-btn" id="cartBtn" type="button" aria-label="Cart">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          <span class="cart-badge" id="cartBadge">0</span>
+        </button>
         <div class="lang-switch" aria-label="Language switcher">
           <button type="button" data-set-lang="en" aria-label="Switch to English">EN</button>
           <button type="button" data-set-lang="ru" aria-label="Переключить на русский">RU</button>
         </div>
-        <a class="btn btn-primary" href="#order" data-i18n="nav.order">Order</a>
+        <a class="btn btn-primary magnetic" href="#order" data-i18n="nav.order">Order</a>
       </div>
     </header>
 
@@ -420,8 +592,8 @@
           <h1 id="hero-title"><span data-i18n="hero.title1">Flowers</span><span class="script" data-i18n="hero.title2">that speak</span></h1>
           <p class="lead" data-i18n="hero.lead">Fresh bouquets for birthdays, dates, launches and quiet "thinking of you" moments — designed by florists and delivered beautifully today.</p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#collections" data-i18n="hero.primary">Choose bouquet</a>
-            <a class="btn btn-soft" href="#how" data-i18n="hero.secondary">See delivery</a>
+            <a class="btn btn-primary magnetic" href="#collections" data-i18n="hero.primary">Choose bouquet</a>
+            <a class="btn btn-soft magnetic" href="#how" data-i18n="hero.secondary">See delivery</a>
           </div>
           <div class="trust-row" aria-label="Highlights">
             <span>✦ <span data-i18n="hero.trust1">from 90 min</span></span>
@@ -430,8 +602,8 @@
           </div>
         </div>
         <div class="bouquet-stage" aria-hidden="true">
-          <div class="blob-card">
-            <img src="img/bouquet-hero.jpg" alt="Floralis bouquet" loading="eager">
+          <div class="blob-card" id="heroBlob">
+            <img src="img/hero-lg.jpg" alt="Floralis bouquet" loading="eager">
           </div>
           <div class="floating-card rating-card"><strong>4.9 ★</strong><small data-i18n="hero.card1">Loved by 12k+ customers</small></div>
           <div class="floating-card delivery-card"><strong data-i18n="hero.card2title">Today</strong><small data-i18n="hero.card2">Fresh bouquet is on the way</small></div>
@@ -446,30 +618,58 @@
       </div>
     </div>
 
+    <div class="stats" aria-label="Statistics">
+      <div class="stat reveal"><b><span class="count" data-target="12" data-suffix="k+">0</span></b><small data-i18n="stat1l">bouquets delivered</small></div>
+      <div class="stat reveal" style="--d:.08s"><b><span class="count" data-target="4.9" data-decimals="1">0</span> ★</b><small data-i18n="stat2l">average rating</small></div>
+      <div class="stat reveal" style="--d:.16s"><b><span class="count" data-target="90">0</span></b><small data-i18n="stat3l">min express delivery</small></div>
+      <div class="stat reveal" style="--d:.24s"><b><span class="count" data-target="30" data-suffix="+">0</span></b><small data-i18n="stat4l">seasonal styles</small></div>
+    </div>
+
     <main>
       <section id="collections" class="reveal" aria-labelledby="collections-title">
         <div class="section-head">
-          <div><div class="kicker">01 / <span data-i18n="collections.kicker">Best sellers</span></div><h2 id="collections-title" data-i18n="collections.title">Bouquets with a bright mood.</h2></div>
+          <div><div class="kicker">01 / <span data-i18n="collections.kicker">Best sellers</span></div><h2 class="h-serif" id="collections-title" data-i18n="collections.title">Bouquets with a bright mood.</h2></div>
           <p class="section-copy" data-i18n="collections.copy">Pick a ready composition or ask our florists to adapt palette, size and message for your occasion.</p>
         </div>
         <div class="collection-grid">
-          <article class="product-card">
-            <div class="product-img"><img src="img/bouquet-1.jpg" alt="Morning Blush bouquet" loading="lazy"></div>
-            <div><h3 data-i18n="product1.title">Morning Blush</h3><p data-i18n="product1.copy">Peonies, spray roses and soft seasonal greenery.</p><div class="price-row"><span class="price" data-i18n="product1.price">from $48</span><button class="add" aria-label="Add Morning Blush">+</button></div></div>
+          <article class="collection-card tilt">
+            <div class="collection-media"><img src="img/blush-lg.jpg" alt="Morning Blush bouquet" loading="lazy"></div>
+            <span class="collection-chip"><span>✶</span><span data-i18n="collections.badge">Hot pick</span></span>
+            <span class="collection-rating"><em>★</em> 4.9</span>
+            <div class="collection-body">
+              <span class="collection-tag" data-i18n="product1.tag">Peony &amp; rose</span>
+              <h3 data-i18n="product1.title">Morning Blush</h3>
+              <p data-i18n="product1.copy">Peonies, spray roses and soft seasonal greenery.</p>
+              <div class="collection-foot"><span class="collection-price"><small data-i18n="product.from">from</small> <span data-i18n="product1.price">$48</span></span><button class="add" type="button" aria-label="Add Morning Blush">+</button></div>
+            </div>
           </article>
-          <article class="product-card">
-            <div class="product-img"><img src="img/bouquet-2.jpg" alt="Sunlit Market bouquet" loading="lazy"></div>
-            <div><h3 data-i18n="product2.title">Sunlit Market</h3><p data-i18n="product2.copy">Warm garden flowers arranged like a summer morning.</p><div class="price-row"><span class="price" data-i18n="product2.price">from $55</span><button class="add" aria-label="Add Sunlit Market">+</button></div></div>
+          <article class="collection-card tilt">
+            <div class="collection-media"><img src="img/market-lg.jpg" alt="Sunlit Market bouquet" loading="lazy"></div>
+            <span class="collection-chip"><span>✶</span><span data-i18n="collections.badge">Hot pick</span></span>
+            <span class="collection-rating"><em>★</em> 4.9</span>
+            <div class="collection-body">
+              <span class="collection-tag" data-i18n="product2.tag">Garden mix</span>
+              <h3 data-i18n="product2.title">Sunlit Market</h3>
+              <p data-i18n="product2.copy">Warm garden flowers arranged like a summer morning.</p>
+              <div class="collection-foot"><span class="collection-price"><small data-i18n="product.from">from</small> <span data-i18n="product2.price">$55</span></span><button class="add" type="button" aria-label="Add Sunlit Market">+</button></div>
+            </div>
           </article>
-          <article class="product-card">
-            <div class="product-img"><img src="img/bouquet-3.jpg" alt="Velvet Garden bouquet" loading="lazy"></div>
-            <div><h3 data-i18n="product3.title">Velvet Garden</h3><p data-i18n="product3.copy">Expressive roses, lisianthus and eucalyptus accents.</p><div class="price-row"><span class="price" data-i18n="product3.price">from $62</span><button class="add" aria-label="Add Velvet Garden">+</button></div></div>
+          <article class="collection-card tilt">
+            <div class="collection-media"><img src="img/velvet-lg.jpg" alt="Velvet Garden bouquet" loading="lazy"></div>
+            <span class="collection-chip"><span>✶</span><span data-i18n="collections.badge">Hot pick</span></span>
+            <span class="collection-rating"><em>★</em> 4.9</span>
+            <div class="collection-body">
+              <span class="collection-tag" data-i18n="product3.tag">Roses &amp; eucalyptus</span>
+              <h3 data-i18n="product3.title">Velvet Garden</h3>
+              <p data-i18n="product3.copy">Expressive roses, lisianthus and eucalyptus accents.</p>
+              <div class="collection-foot"><span class="collection-price"><small data-i18n="product.from">from</small> <span data-i18n="product3.price">$62</span></span><button class="add" type="button" aria-label="Add Velvet Garden">+</button></div>
+            </div>
           </article>
         </div>
       </section>
 
       <section id="how" class="reveal" aria-labelledby="how-title">
-        <div class="section-head"><div><div class="kicker">02 / <span data-i18n="how.kicker">Delivery flow</span></div><h2 id="how-title" data-i18n="how.title">From florist table to their door.</h2></div></div>
+        <div class="section-head"><div><div class="kicker">02 / <span data-i18n="how.kicker">Delivery flow</span></div><h2 class="h-serif" id="how-title" data-i18n="how.title">From florist table to their door.</h2></div></div>
         <div class="steps">
           <article class="step"><div class="step-num">01</div><h3 data-i18n="step1.title">Choose</h3><p data-i18n="step1.copy">Select a bouquet, size and delivery window.</p></article>
           <article class="step"><div class="step-num">02</div><h3 data-i18n="step2.title">Personalize</h3><p data-i18n="step2.copy">Add a card, ribbon color or special request.</p></article>
@@ -479,7 +679,7 @@
       </section>
 
       <section id="care" class="split reveal" aria-label="Freshness promise">
-        <div class="panel highlight"><div class="kicker" style="color:rgba(255,255,255,.82)">03 / <span data-i18n="care.kicker">Florist promise</span></div><h2 data-i18n="care.title">Fresh stems, careful hands, zero ordinary bouquets.</h2></div>
+        <div class="panel highlight"><div class="kicker">03 / <span data-i18n="care.kicker">Florist promise</span></div><h2 class="h-serif" data-i18n="care.title">Fresh stems, careful hands, zero ordinary bouquets.</h2></div>
         <div class="panel benefits">
           <div class="benefit"><div class="benefit-icon">🌿</div><div><strong data-i18n="benefit1.title">Seasonal sourcing</strong><span data-i18n="benefit1.copy">We choose flowers that look best today — not last week.</span></div></div>
           <div class="benefit"><div class="benefit-icon">💌</div><div><strong data-i18n="benefit2.title">Meaningful notes</strong><span data-i18n="benefit2.copy">Every order can include a handwritten card in your words.</span></div></div>
@@ -488,17 +688,39 @@
       </section>
 
       <section id="reviews" class="reveal" aria-labelledby="reviews-title">
-        <div class="section-head"><div><div class="kicker">04 / <span data-i18n="reviews.kicker">Customer notes</span></div><h2 id="reviews-title" data-i18n="reviews.title">Sent with love. Received with wow.</h2></div></div>
+        <div class="section-head"><div><div class="kicker">04 / <span data-i18n="reviews.kicker">Customer notes</span></div><h2 class="h-serif" id="reviews-title" data-i18n="reviews.title">Sent with love. Received with wow.</h2></div></div>
         <div class="reviews">
-          <article class="review"><div class="stars">★★★★★</div><p data-i18n="review1.copy">"The bouquet looked even better than the photo. Delivery was fast and the card felt personal."</p><strong data-i18n="review1.name">Maya</strong></article>
-          <article class="review"><div class="stars">★★★★★</div><p data-i18n="review2.copy">"I ordered from another city and got a preview before delivery. Super easy and beautiful."</p><strong data-i18n="review2.name">Alex</strong></article>
-          <article class="review"><div class="stars">★★★★★</div><p data-i18n="review3.copy">"Bright, fresh, not generic. Floralis made a Monday feel like a celebration."</p><strong data-i18n="review3.name">Nina</strong></article>
+          <article class="review"><div class="stars">★★★★★</div><p data-i18n="review1.copy">"The bouquet looked even better than the photo. Delivery was fast and the card felt personal."</p><div class="review-author"><div class="review-avatar">M</div><strong data-i18n="review1.name">Maya</strong></div></article>
+          <article class="review"><div class="stars">★★★★★</div><p data-i18n="review2.copy">"I ordered from another city and got a preview before delivery. Super easy and beautiful."</p><div class="review-author"><div class="review-avatar">A</div><strong data-i18n="review2.name">Alex</strong></div></article>
+          <article class="review"><div class="stars">★★★★★</div><p data-i18n="review3.copy">"Bright, fresh, not generic. Floralis made a Monday feel like a celebration."</p><div class="review-author"><div class="review-avatar">N</div><strong data-i18n="review3.name">Nina</strong></div></article>
+        </div>
+      </section>
+
+      <section id="faq" class="reveal" aria-labelledby="faq-title">
+        <div class="section-head"><div><div class="kicker">05 / <span data-i18n="faq.kicker">Questions</span></div><h2 class="h-serif" id="faq-title" data-i18n="faq.title">Everything you need to know.</h2></div></div>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false"><span data-i18n="faq.q1">Can I order flowers for today?</span><span class="faq-icon">+</span></button>
+            <div class="faq-a"><p data-i18n="faq.a1">Yes — same-day delivery is available in the city zone from 90 minutes. Choose a convenient window at checkout.</p></div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false"><span data-i18n="faq.q2">Can I personalise the bouquet?</span><span class="faq-icon">+</span></button>
+            <div class="faq-a"><p data-i18n="faq.a2">Absolutely. Add a card, choose the ribbon colour, swap flowers or resize the bouquet with your florist before approval.</p></div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false"><span data-i18n="faq.q3">How do I know the bouquet is fresh?</span><span class="faq-icon">+</span></button>
+            <div class="faq-a"><p data-i18n="faq.a3">Every bouquet is photographed right before the courier leaves the studio — you approve exactly what gets delivered.</p></div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false"><span data-i18n="faq.q4">What if nobody is home?</span><span class="faq-icon">+</span></button>
+            <div class="faq-a"><p data-i18n="faq.a4">Couriers always call ahead and can leave the bouquet with a neighbour or the concierge if you're away.</p></div>
+          </div>
         </div>
       </section>
 
       <section id="order" class="cta reveal" aria-labelledby="cta-title">
-        <div><h2 id="cta-title" data-i18n="cta.title">Ready to send flowers today?</h2><p data-i18n="cta.copy">Tell us the occasion, preferred colors and delivery time. We'll create a bouquet that feels personal from the first petal.</p></div>
-        <a class="btn" href="mailto:hello@floralis.example?subject=Floralis%20order" data-i18n="cta.button">Start an order</a>
+        <div><h2 class="h-serif" id="cta-title" data-i18n="cta.title">Ready to send flowers today?</h2><p data-i18n="cta.copy">Tell us the occasion, preferred colors and delivery time. We'll create a bouquet that feels personal from the first petal.</p></div>
+        <a class="btn magnetic" href="mailto:hello@floralis.example?subject=Floralis%20order" data-i18n="cta.button">Start an order</a>
       </section>
     </main>
 
@@ -508,29 +730,37 @@
     </footer>
   </div>
 
+  <button class="to-top" id="toTop" type="button" aria-label="Back to top">↑</button>
+
   <script>
     const translations = {
       en: {
-        'nav.collections':'Collections','nav.how':'How it works','nav.care':'Freshness','nav.reviews':'Reviews','nav.order':'Order',
+        'nav.collections':'Collections','nav.how':'How it works','nav.care':'Freshness','nav.faq':'FAQ','nav.order':'Order',
         'hero.eyebrow':'Same-day flower delivery','hero.title1':'Flowers','hero.title2':'that speak','hero.lead':'Fresh bouquets for birthdays, dates, launches and quiet "thinking of you" moments — designed by florists and delivered beautifully today.','hero.primary':'Choose bouquet','hero.secondary':'See delivery','hero.trust1':'from 90 min','hero.trust2':'hand-tied','hero.trust3':'photo before courier','hero.card1':'Loved by 12k+ customers','hero.card2title':'Today','hero.card2':'Fresh bouquet is on the way',
-        'collections.kicker':'Best sellers','collections.title':'Bouquets with a bright mood.','collections.copy':'Pick a ready composition or ask our florists to adapt palette, size and message for your occasion.',
-        'product1.title':'Morning Blush','product1.copy':'Peonies, spray roses and soft seasonal greenery.','product1.price':'from $48','product2.title':'Sunlit Market','product2.copy':'Warm garden flowers arranged like a summer morning.','product2.price':'from $55','product3.title':'Velvet Garden','product3.copy':'Expressive roses, lisianthus and eucalyptus accents.','product3.price':'from $62',
+        'stat1l':'bouquets delivered','stat2l':'average rating','stat3l':'min express delivery','stat4l':'seasonal styles',
+        'collections.kicker':'Best sellers','collections.title':'Bouquets with a bright mood.','collections.copy':'Pick a ready composition or ask our florists to adapt palette, size and message for your occasion.','collections.badge':'Hot pick',
+        'product.from':'from','product1.tag':'Peony & rose','product1.title':'Morning Blush','product1.copy':'Peonies, spray roses and soft seasonal greenery.','product1.price':'$48','product2.tag':'Garden mix','product2.title':'Sunlit Market','product2.copy':'Warm garden flowers arranged like a summer morning.','product2.price':'$55','product3.tag':'Roses & eucalyptus','product3.title':'Velvet Garden','product3.copy':'Expressive roses, lisianthus and eucalyptus accents.','product3.price':'$62',
         'how.kicker':'Delivery flow','how.title':'From florist table to their door.','step1.title':'Choose','step1.copy':'Select a bouquet, size and delivery window.','step2.title':'Personalize','step2.copy':'Add a card, ribbon color or special request.','step3.title':'Approve','step3.copy':'Receive a bouquet photo before it leaves the studio.','step4.title':'Deliver','step4.copy':'Track the courier and surprise someone beautifully.',
         'care.kicker':'Florist promise','care.title':'Fresh stems, careful hands, zero ordinary bouquets.','benefit1.title':'Seasonal sourcing','benefit1.copy':'We choose flowers that look best today — not last week.','benefit2.title':'Meaningful notes','benefit2.copy':'Every order can include a handwritten card in your words.','benefit3.title':'Gentle delivery','benefit3.copy':'Bouquets travel in water, protected from heat and cold.',
         'reviews.kicker':'Customer notes','reviews.title':'Sent with love. Received with wow.','review1.copy':'"The bouquet looked even better than the photo. Delivery was fast and the card felt personal."','review1.name':'Maya','review2.copy':'"I ordered from another city and got a preview before delivery. Super easy and beautiful."','review2.name':'Alex','review3.copy':'"Bright, fresh, not generic. Floralis made a Monday feel like a celebration."','review3.name':'Nina',
+        'faq.kicker':'Questions','faq.title':'Everything you need to know.','faq.q1':'Can I order flowers for today?','faq.a1':'Yes — same-day delivery is available in the city zone from 90 minutes. Choose a convenient window at checkout.','faq.q2':'Can I personalise the bouquet?','faq.a2':'Absolutely. Add a card, choose the ribbon colour, swap flowers or resize the bouquet with your florist before approval.','faq.q3':'How do I know the bouquet is fresh?','faq.a3':'Every bouquet is photographed right before the courier leaves the studio — you approve exactly what gets delivered.','faq.q4':'What if nobody is home?','faq.a4':'Couriers always call ahead and can leave the bouquet with a neighbour or the concierge if you\'re away.',
         'cta.title':'Ready to send flowers today?','cta.copy':'Tell us the occasion, preferred colors and delivery time. We\'ll create a bouquet that feels personal from the first petal.','cta.button':'Start an order','footer.copy':'Modern flower delivery landing concept.'
       },
       ru: {
-        'nav.collections':'Коллекции','nav.how':'Как работает','nav.care':'Свежесть','nav.reviews':'Отзывы','nav.order':'Заказать',
+        'nav.collections':'Коллекции','nav.how':'Как работает','nav.care':'Свежесть','nav.faq':'FAQ','nav.order':'Заказать',
         'hero.eyebrow':'Доставка цветов день в день','hero.title1':'Цветы','hero.title2':'говорят за вас','hero.lead':'Свежие букеты для дней рождения, свиданий, запусков и тихих моментов "думаю о тебе" — собираем вручную и красиво доставляем сегодня.','hero.primary':'Выбрать букет','hero.secondary':'Как доставляем','hero.trust1':'от 90 минут','hero.trust2':'ручная сборка','hero.trust3':'фото до курьера','hero.card1':'12k+ довольных клиентов','hero.card2title':'Сегодня','hero.card2':'Свежий букет уже в пути',
-        'collections.kicker':'Хиты продаж','collections.title':'Букеты с ярким настроением.','collections.copy':'Выберите готовую композицию или попросите флористов адаптировать палитру, размер и открытку под ваш повод.',
-        'product1.title':'Утренний румянец','product1.copy':'Пионы, кустовые розы и мягкая сезонная зелень.','product1.price':'от 4 800 ₽','product2.title':'Солнечный рынок','product2.copy':'Тёплые садовые цветы, собранные как летнее утро.','product2.price':'от 5 500 ₽','product3.title':'Бархатный сад','product3.copy':'Выразительные розы, лизиантус и акценты эвкалипта.','product3.price':'от 6 200 ₽',
+        'stat1l':'доставлено букетов','stat2l':'средняя оценка','stat3l':'мин экспресс-доставка','stat4l':'сезонных стилей',
+        'collections.kicker':'Хиты продаж','collections.title':'Букеты с ярким настроением.','collections.copy':'Выберите готовую композицию или попросите флористов адаптировать палитру, размер и открытку под ваш повод.','collections.badge':'Хит продаж',
+        'product.from':'от','product1.tag':'Пионы и розы','product1.title':'Утренний румянец','product1.copy':'Пионы, кустовые розы и мягкая сезонная зелень.','product1.price':'4 800 ₽','product2.tag':'Садовая смесь','product2.title':'Солнечный рынок','product2.copy':'Тёплые садовые цветы, собранные как летнее утро.','product2.price':'5 500 ₽','product3.tag':'Розы и эвкалипт','product3.title':'Бархатный сад','product3.copy':'Выразительные розы, лизиантус и акценты эвкалипта.','product3.price':'6 200 ₽',
         'how.kicker':'Процесс доставки','how.title':'От стола флориста — прямо к двери.','step1.title':'Выберите','step1.copy':'Букет, размер и удобный интервал доставки.','step2.title':'Добавьте детали','step2.copy':'Открытку, цвет ленты или особое пожелание.','step3.title':'Утвердите','step3.copy':'Пришлём фото букета перед отправкой из студии.','step4.title':'Получите','step4.copy':'Отслеживайте курьера и красиво удивляйте близких.',
         'care.kicker':'Обещание флориста','care.title':'Свежие стебли, внимательные руки и ни одного обычного букета.','benefit1.title':'Сезонный отбор','benefit1.copy':'Берём цветы, которые выглядят лучше всего именно сегодня.','benefit2.title':'Открытки со смыслом','benefit2.copy':'К каждому заказу можно добавить рукописную открытку с вашими словами.','benefit3.title':'Бережная доставка','benefit3.copy':'Букеты едут в воде и защищены от жары и холода.',
         'reviews.kicker':'Отзывы клиентов','reviews.title':'Отправлено с любовью. Получено с восторгом.','review1.copy':'«Букет выглядел даже лучше, чем на фото. Доставили быстро, открытка получилась очень личной».','review1.name':'Майя','review2.copy':'«Заказывал из другого города и получил превью перед доставкой. Просто и очень красиво».','review2.name':'Алексей','review3.copy':'«Ярко, свежо, не шаблонно. Floralis превратил понедельник в праздник».','review3.name':'Нина',
+        'faq.kicker':'Вопросы','faq.title':'Всё, что нужно знать.','faq.q1':'Можно заказать цветы на сегодня?','faq.a1':'Да — доставка день в день доступна по городу от 90 минут. Выберите удобный интервал при оформлении.','faq.q2':'Можно ли персонализировать букет?','faq.a2':'Конечно. Добавьте открытку, выберите цвет ленты, замените цветы или измените размер букета с флористом до утверждения.','faq.q3':'Как узнать, что букет свежий?','faq.a3':'Каждый букет фотографируется прямо перед отправкой курьеру — вы утверждаете именно то, что привезут.','faq.q4':'Что будет, если меня нет дома?','faq.a4':'Курьеры всегда звонят заранее и могут передать букет соседям или консьержу, если вас нет дома.',
         'cta.title':'Готовы отправить цветы сегодня?','cta.copy':'Расскажите повод, любимые оттенки и время доставки. Мы соберём букет, который будет личным с первого лепестка.','cta.button':'Начать заказ','footer.copy':'Концепт современного лендинга доставки цветов.'
       }
     };
+
+    /* ---------- i18n ---------- */
     const html = document.documentElement;
     const saved = localStorage.getItem('floralis-lang');
     const initial = saved || (navigator.language && navigator.language.toLowerCase().startsWith('ru') ? 'ru' : 'en');
@@ -546,17 +776,143 @@
       setTimeout(() => document.body.classList.remove('is-switching'), 120);
     }
     document.querySelectorAll('[data-set-lang]').forEach(btn => btn.addEventListener('click', () => setLang(btn.dataset.setLang)));
+
+    /* ---------- scroll progress + header shrink + to-top ---------- */
+    const progress = document.getElementById('scrollProgress');
+    const header = document.getElementById('siteHeader');
+    const toTop = document.getElementById('toTop');
+    function onScroll() {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop;
+      const max = h.scrollHeight - h.clientHeight;
+      progress.style.width = (max > 0 ? (scrolled / max) * 100 : 0) + '%';
+      header.classList.toggle('scrolled', scrolled > 30);
+      toTop.classList.toggle('show', scrolled > 600);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    /* ---------- cursor glow ---------- */
+    const glow = document.getElementById('cursorGlow');
+    let gx = innerWidth / 2, gy = innerHeight / 2, tx = gx, ty = gy;
+    if (matchMedia('(pointer:fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.body.classList.add('has-cursor');
+      window.addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
+      (function loop() {
+        gx += (tx - gx) * .08; gy += (ty - gy) * .08;
+        glow.style.transform = `translate(${gx}px, ${gy}px)`;
+        requestAnimationFrame(loop);
+      })();
+    }
+
+    /* ---------- magnetic buttons ---------- */
+    document.querySelectorAll('.magnetic').forEach(btn => {
+      btn.addEventListener('mousemove', e => {
+        const r = btn.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width / 2) * .3;
+        const y = (e.clientY - r.top - r.height / 2) * .3;
+        btn.style.transform = `translate(${x}px, ${y}px)`;
+      });
+      btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+    });
+
+    /* ---------- 3D tilt cards ---------- */
+    document.querySelectorAll('.tilt').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - .5;
+        const py = (e.clientY - r.top) / r.height - .5;
+        card.style.transform = `rotateY(${px * 7}deg) rotateX(${-py * 7}deg) translateY(-4px)`;
+      });
+      card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+    });
+
+    /* ---------- hero blob parallax ---------- */
+    const blob = document.getElementById('heroBlob');
+    document.querySelector('.bouquet-stage').addEventListener('mousemove', e => {
+      const r = blob.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - .5;
+      const py = (e.clientY - r.top) / r.height - .5;
+      blob.style.transform = `rotateY(${px * 10}deg) rotateX(${-py * 10}deg)`;
+    });
+    document.querySelector('.bouquet-stage').addEventListener('mouseleave', () => { blob.style.transform = ''; });
+
+    /* ---------- animated counters ---------- */
+    const counters = [...document.querySelectorAll('.count')];
+    if ('IntersectionObserver' in window) {
+      const co = new IntersectionObserver((entries, obs) => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          const el = e.target;
+          const target = parseFloat(el.dataset.target);
+          const decimals = parseInt(el.dataset.decimals || 0, 10);
+          const suffix = el.dataset.suffix || '';
+          const dur = 1400; const start = performance.now();
+          (function tick(now) {
+            const p = Math.min((now - start) / dur, 1);
+            const eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = (target * eased).toFixed(decimals) + suffix;
+            if (p < 1) requestAnimationFrame(tick); else el.textContent = target.toFixed(decimals) + suffix;
+          })(start);
+          obs.unobserve(el);
+        });
+      }, { threshold: .6 });
+      counters.forEach(c => co.observe(c));
+    }
+
+    /* ---------- reveal ---------- */
+    const ro = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); ro.unobserve(e.target); } });
+    }, { threshold: .12 });
+    document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+    /* ---------- quick add + cart ---------- */
+    const badge = document.getElementById('cartBadge');
+    let cartCount = 0;
     document.querySelectorAll('.add').forEach(btn => btn.addEventListener('click', () => {
-      const old = btn.textContent;
+      if (btn.classList.contains('added')) return;
+      btn.classList.add('added');
       btn.textContent = '✓';
-      setTimeout(() => btn.textContent = old, 900);
+      cartCount++;
+      badge.textContent = cartCount;
+      badge.classList.add('show');
+      badge.classList.remove('pop');
+      void badge.offsetWidth;
+      badge.classList.add('pop');
+      setTimeout(() => { btn.classList.remove('added'); btn.textContent = '+'; }, 1100);
     }));
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-    }, { threshold: 0.12 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    /* ---------- active nav link ---------- */
+    const navLinks = [...document.querySelectorAll('.nav a')];
+    const secObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
+        }
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    ['collections', 'how', 'faq'].forEach(id => { const s = document.getElementById(id); if (s) secObs.observe(s); });
 
+    /* ---------- FAQ accordion ---------- */
+    document.querySelectorAll('.faq-q').forEach(q => {
+      q.addEventListener('click', () => {
+        const item = q.closest('.faq-item');
+        const panel = item.querySelector('.faq-a');
+        const open = item.classList.contains('open');
+        document.querySelectorAll('.faq-item.open').forEach(o => {
+          o.classList.remove('open');
+          o.querySelector('.faq-a').style.maxHeight = null;
+          o.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+        });
+        if (!open) {
+          item.classList.add('open');
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+          q.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+
+    onScroll();
     setLang(initial);
   </script>
 </body>
